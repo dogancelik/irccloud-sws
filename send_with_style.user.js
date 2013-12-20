@@ -5,8 +5,8 @@
 // @include     https://www.irccloud.com/#!/*
 // @version     1.0.1
 // @grant       none
-// @updateURL   https://github.com/dogancelik/greasemonkey-scripts/raw/master/send-with-style/send_with_style.user.js
-// @downloadURL https://github.com/dogancelik/greasemonkey-scripts/raw/master/send-with-style/send_with_style.user.js
+// @updateURL   https://github.com/dogancelik/irccloud-sws/raw/master/send_with_style.user.js
+// @downloadURL https://github.com/dogancelik/irccloud-sws/raw/master/send_with_style.user.js
 // ==/UserScript==
 
 (function () {
