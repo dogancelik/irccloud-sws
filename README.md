@@ -6,11 +6,14 @@ Enables text styles in [IRCCloud](https://www.irccloud.com/)
 <img src="sws.jpg">
 
 ### Custom aliases (Examples):
+Format is: `alias,your original text`
 
 ```
 %hello,/me says hello!
 pls,please
 :stare,ಠ_ಠ
 ```
+
+If you type ":stare", it will output "ಠ_ಠ"
 
 **Supported browsers:** Firefox with Greasemonkey, Chrome with Tampermonkey
