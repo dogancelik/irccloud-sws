@@ -1,0 +1,99 @@
+#sws-container.accountContainer
+  button.close(type='button')
+    span Close
+  h2
+    span Send with Style&nbsp;
+    input#sws-enabled-check(type='checkbox')
+    | &nbsp;
+    label#sws-enabled-label(for='sws-enabled-check')
+  p.explanation Type your text as you normally would, use the codes to style your text.
+  table.sws-info-table
+    tr
+      th Code
+      th Example
+    tr
+      td
+        code %C
+        | &nbsp;for&nbsp;
+        a#sws-colors-anchor(title='Click here to show color numbers', style='border-bottom: 1px dashed black;')
+          font(color='#ff0000') c
+          font(color='#cc8f33') o
+          font(color='#99ed66') l
+          font(color='#66f899') o
+          font(color='#33accc') r
+      td
+        code %C2This is blue
+        |  → 
+        code
+          span(style='color: blue') This is blue
+    tr#sws-colors-box
+      td(colspan='2')
+        span.sws-little-box.bg-white.black 0
+        span.sws-little-box.bg-black.white 1
+        span.sws-little-box.bg-navy.white 2
+        span.sws-little-box.bg-green.white 3
+        span.sws-little-box.bg-red.black 4
+        span.sws-little-box.bg-maroon.white 5
+        span.sws-little-box.bg-purple.white 6
+        span.sws-little-box.bg-orange.black 7
+        span.sws-little-box.bg-yellow.black 8
+        span.sws-little-box.bg-lime.black 9
+        span.sws-little-box.bg-teal.white 10
+        span.sws-little-box.bg-cyan.black 11
+        span.sws-little-box.bg-blue.white 12
+        span.sws-little-box.bg-magenta.black 13
+        span.sws-little-box.bg-grey.black 14
+        span.sws-little-box.bg-silver.black 15
+    tr
+      td
+        code %B
+        |  for 
+        b bold
+      td
+        code %BVery bold
+        |  → 
+        code
+          b Very bold
+    tr
+      td
+        code %I
+        |  for 
+        i italic
+      td
+        code %IPizza
+        |  → 
+        code
+          i Pizza
+    tr
+      td
+        code %U
+        |  for 
+        u underline
+      td
+        code %UBeep
+        |  → 
+        code
+          u Beep
+    tr
+      td
+        code %R
+        |  for reset
+      td
+        code %C4Wo%Rrd
+        |  → 
+        code
+          span(style='color: red') Wo
+          | rd
+  p.explanation
+    | Custom aliases (
+    a(href='https://github.com/dogancelik/irccloud-sws#custom-aliases-examples', target='_blank') ?
+    | )
+  textarea#sws-custom-alias
+  p#sws-donate.explanation
+    | If you like this script, please 
+    a(href='https://flattr.com/submit/auto?user_id=dogancelik&url=https%3A%2F%2Fgithub.com%2Fdogancelik%2Firccloud-sws', target='_blank')
+      img(border='0', src='//api.flattr.com/button/flattr-badge-large.png', alt='Flattr this', title='Flattr this')
+    | &nbsp;or help me via&nbsp;
+    a(href='https://gratipay.com/dogancelik/', target='_blank') Gratipay
+  p.explanation
+    a(href='https://github.com/dogancelik/irccloud-sws', target='_blank') Source code

@@ -1,0 +1,58 @@
+#sws-container
+  font-size 18px
+  display none
+
+#sws-bar
+  color #C0DBFF
+  float right
+  
+  &::after
+    content "\\00a0|\\00a0"
+  
+  a
+    cursor pointer
+
+.sws-little-box
+  display inline-block
+  height 20px
+  width 20px
+  border 1px solid black
+  text-align center
+  font-size .7em
+
+.sws-info-table
+  width 100%
+  border 1px solid rgba(0,0,0,.1)
+  border-radius .2em
+  padding .5em
+
+#sws-colors-box
+  display none
+
+#sws-colors-anchor
+  cursor pointer
+
+#sws-donate
+  font-weight bold
+
+  a
+    vertical-align top
+
+#sws-custom-alias
+  height 60px
+  width 100%
+
+#sws-enabled-label
+  font-weight normal
+
+#sws-enabled-check:not(:checked) ~ #sws-enabled-label
+  color red
+
+  &::after
+    content "Not enabled"
+
+#sws-enabled-check:checked ~ #sws-enabled-label
+  color green
+
+  &::after
+    content "Enabled"

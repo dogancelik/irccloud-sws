@@ -5,7 +5,6 @@
 // @include     https://www.irccloud.com/*
 // @version     2.0.2
 // @grant       none
-// @updateURL   https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.user.js
+// @updateURL   https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.meta.js
 // @downloadURL https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.user.js
 // ==/UserScript==
-// Script is moved to build directory
