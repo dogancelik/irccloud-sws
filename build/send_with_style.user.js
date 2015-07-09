@@ -3,7 +3,7 @@
 // @namespace   dogancelik.com
 // @description Enables font styles in IRCCloud
 // @include     https://www.irccloud.com/*
-// @version     2.1.0
+// @version     2.1.1
 // @grant       none
 // @updateURL   https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.meta.js
 // @downloadURL https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.user.js
@@ -26,7 +26,7 @@ var fontStyles = {
   color: '\u0003',
   bold: '\u0002',
   reset: '\u000f',
-  italic: '\u0016',
+  italic: '\u001d',
   underline: '\u001f'
 };
 

@@ -15,7 +15,7 @@ var fontStyles = {
   color: '\u0003',
   bold: '\u0002',
   reset: '\u000f',
-  italic: '\u0016',
+  italic: '\u001d',
   underline: '\u001f'
 };
 
