@@ -3,7 +3,7 @@
 // @namespace   dogancelik.com
 // @description Enables font styles in IRCCloud
 // @include     https://www.irccloud.com/*
-// @version     3.0.0
+// @version     3.0.1
 // @grant       none
 // @updateURL   https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.meta.js
 // @downloadURL https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.user.js
@@ -100,10 +100,12 @@ function bindTextarea () {
       }
 
       if (e.keyCode === 13 && mainEnabled) {
+        var val = input.val();
+        val = replaceAliases(val);
+        input.val(val);
 
         if (!keyboardEnabled) {
           var val = input.val();
-          val = replaceAliases(val);
           val = replaceFontStyles(val);
           input.val(val);
         }

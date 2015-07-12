@@ -89,10 +89,12 @@ function bindTextarea () {
       }
 
       if (e.keyCode === 13 && mainEnabled) {
+        var val = input.val();
+        val = replaceAliases(val);
+        input.val(val);
 
         if (!keyboardEnabled) {
           var val = input.val();
-          val = replaceAliases(val);
           val = replaceFontStyles(val);
           input.val(val);
         }
