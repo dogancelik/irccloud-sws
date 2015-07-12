@@ -2,6 +2,8 @@
 
 'use strict';
 
+var isChrome = /chrome/.test(navigator.userAgent.toLowerCase());
+
 function embedStyle() {
   var style = document.createElement('style');
   style.type = 'text/css';
@@ -9,7 +11,7 @@ function embedStyle() {
   document.head.appendChild(style);
 }
 
-var checkbox, swsAlias, swsMarkdown;
+var swsEnabled, swsAlias, swsMarkdown, swsKeyboard, swsKeyCtrl, swsKeyAlt, swsKeyShift, swsKeyChar, shortcutWaiting;
 
 var fontStyles = {
   color: '\u0003',
@@ -28,13 +30,9 @@ function replaceFontStyles (str) {
 }
 
 function replaceMarkdown (str) {
-  if (swsMarkdown.prop('checked')) {
-    return str.replace(/\*{3}([^\*]+)\*{3}/g, '%B%I$1%I%B')
-      .replace(/\*{2}([^\*]+)\*{2}/g, '%B$1%B')
-      .replace(/\*{1}([^\*]+)\*{1}/g, '%I$1%I');
-  } else {
-    return str;
-  }
+  return str.replace(/\*{3}([^\*]+)\*{3}/g, fontStyles.bold + fontStyles.italic + '$1' + fontStyles.italic + fontStyles.bold)
+    .replace(/\*{2}([^\*]+)\*{2}/g, fontStyles.bold + '$1' + fontStyles.bold)
+    .replace(/\*{1}([^\*]+)\*{1}/g, fontStyles.italic + '$1' + fontStyles.italic);
 }
 
 function replaceAliases (str) {
@@ -49,16 +47,89 @@ function replaceAliases (str) {
   }
 }
 
+function toggleShortcutProgress (input, toggle) {
+  if (toggle) {
+    input.css('outline', '1px solid blue');
+    shortcutWaiting = true;
+  } else {
+    input.css('outline', '');
+    shortcutWaiting = false;
+  }
+}
+
+function insertTo(input, text) {
+  var cursorPos = input.prop('selectionStart');
+  var val = input.val();
+  var before = val.substring(0, cursorPos);
+  var after  = val.substring(cursorPos, val.length);
+  input.val(before + text + after);
+  input.prop('selectionStart', cursorPos + 1);
+  input.prop('selectionEnd', cursorPos + 1);
+}
+
 function bindTextarea () {
   var input = $('#bufferInputView' + cb().bid());
   if (input.data('sws') !== '1') {
     input.on('keydown', function (e) {
-      if (e.keyCode === 13 && checkbox.prop('checked')) {
-        var val = input.val();
-        val = replaceAliases(val);
-        val = replaceMarkdown(val);
-        val = replaceFontStyles(val);
-        input.val(val);
+      var mainEnabled = swsEnabled.prop('checked');
+      var keyboardEnabled = swsKeyboard.prop('checked');
+      var markdownEnabled = swsMarkdown.prop('checked');
+      var lowerKey = (isChrome ? String.fromCharCode(e.which) : e.key).toLowerCase();
+
+      if (keyboardEnabled) {
+        var enabledCtrl = swsKeyCtrl.prop('checked');
+        var enabledAlt = swsKeyAlt.prop('checked');
+        var enabledShift = swsKeyShift.prop('checked');
+        var activateChar = swsKeyChar.val().trim().substr(0, 1).toLowerCase();
+
+        if (e.ctrlKey === enabledCtrl && e.altKey === enabledAlt && e.shiftKey === enabledShift && lowerKey == activateChar) {
+          toggleShortcutProgress(input, true);
+          return;
+        }
+      }
+
+      if (e.keyCode === 13 && mainEnabled) {
+
+        if (!keyboardEnabled) {
+          var val = input.val();
+          val = replaceAliases(val);
+          val = replaceFontStyles(val);
+          input.val(val);
+        }
+
+        if (markdownEnabled) {
+          var val = input.val();
+          val = replaceMarkdown(val);
+          input.val(val);
+        }
+      }
+
+      if (shortcutWaiting && keyboardEnabled) {
+        var noInput = false;
+        switch (lowerKey) {
+          case "c":
+            insertTo(input, fontStyles.color);
+            noInput = true;
+            break;
+          case "b":
+            insertTo(input, fontStyles.bold);
+            noInput = true;
+            break;
+          case "i":
+            insertTo(input, fontStyles.italic);
+            noInput = true;
+            break;
+          case "u":
+            insertTo(input, fontStyles.underline);
+            noInput = true;
+            break;
+          case "r":
+            insertTo(input, fontStyles.reset);
+            noInput = true;
+            break;
+        }
+        toggleShortcutProgress(input, false);
+        if (noInput) return false;
       }
     });
     input.data('sws', '1');
@@ -86,7 +157,7 @@ function init() {
     container.fadeOut();
   });
 
-  checkbox = container.find('#sws-enabled-check').change(function () {
+  swsEnabled = container.find('#sws-enabled-check').change(function () {
     localStorage.setItem('swsEnabled', this.checked);
   }).prop('checked', JSON.parse(localStorage.getItem('swsEnabled')) || true);
 
@@ -100,6 +171,26 @@ function init() {
   .on('change', function () {
     localStorage.setItem('swsAlias', swsAlias.val());
   });
+
+  swsKeyboard = container.find('#sws-keyboard-mode').change(function () {
+    localStorage.setItem('swsKeyboard', this.checked);
+  }).prop('checked', JSON.parse(localStorage.getItem('swsKeyboard')) || false);
+
+  swsKeyCtrl = container.find('#sws-key-ctrl').change(function () {
+    localStorage.setItem('swsKeyCtrl', this.checked);
+  }).prop('checked', JSON.parse(localStorage.getItem('swsKeyCtrl')) || true);
+
+  swsKeyAlt = container.find('#sws-key-alt').change(function () {
+    localStorage.setItem('swsKeyAlt', this.checked);
+  }).prop('checked', JSON.parse(localStorage.getItem('swsKeyAlt')) || false);
+
+  swsKeyShift = container.find('#sws-key-shift').change(function () {
+    localStorage.setItem('swsKeyShift', this.checked);
+  }).prop('checked', JSON.parse(localStorage.getItem('swsKeyShift')) || true);
+
+  swsKeyChar = container.find('#sws-key-char').change(function () {
+    localStorage.setItem('swsKeyChar', this.value);
+  }).val(localStorage.getItem('swsKeyChar') || 'z');
 
   swsMarkdown = container.find('#sws-markdown-mode').change(function () {
     localStorage.setItem('swsMarkdown', this.checked);

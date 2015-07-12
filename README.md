@@ -5,7 +5,7 @@ Enables text styles in [IRCCloud](https://www.irccloud.com/)
 
 **New feature:** Markdown Mode (Optional!), you can now use `*` and `**`.
 
-![Screenshot](extras/screenshot.jpg)
+![Screenshot](extras/screenshot.png)
 
 ### Custom aliases (Examples):
 Format is: `alias,your original text`

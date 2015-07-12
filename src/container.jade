@@ -85,18 +85,31 @@
           span(style='color: red') Wo
           | rd
   p.explanation
-    input#sws-markdown-mode(type='checkbox')
-    label(for='sws-markdown-mode') &nbsp;Markdown Mode <small><strong>Beta!</strong></small> (Enables <code>*</code> and <code>**</code> for italic and bold text)
+    input#sws-keyboard-mode(type='checkbox')
+    label(for='sws-keyboard-mode') &nbsp;Keyboard Mode (Disables %C, %B etc.)&nbsp;
+    span.sws-key-box
+      label(for='sws-key-ctrl') Ctrl:&nbsp;
+      input#sws-key-ctrl(type='checkbox')
+    span.sws-key-box
+      label(for='sws-key-alt') Alt:&nbsp;
+      input#sws-key-alt(type='checkbox')
+    span.sws-key-box
+      label(for='sws-key-alt') Shift:&nbsp;
+      input#sws-key-shift(type='checkbox')
+    span.sws-key-box      
+      label(for='sws-key-char') Key:&nbsp;
+      input#sws-key-char(type='text')
   p.explanation
-    | Custom aliases (
-    a(href='https://github.com/dogancelik/irccloud-sws#custom-aliases-examples', target='_blank') ?
-    | )
+    input#sws-markdown-mode(type='checkbox')
+    label(for='sws-markdown-mode') &nbsp;Markdown Mode (Enables <code>*</code> and <code>**</code> for italic and bold text)
+  p.explanation Custom aliases
   textarea#sws-custom-alias
   p#sws-donate.explanation
     | If you like this script, please 
-    a(href='https://flattr.com/submit/auto?user_id=dogancelik&url=https%3A%2F%2Fgithub.com%2Fdogancelik%2Firccloud-sws', target='_blank')
-      img(border='0', src='//api.flattr.com/button/flattr-badge-large.png', alt='Flattr this', title='Flattr this')
+    a(href='https://flattr.com/submit/auto?user_id=dogancelik&url=https%3A%2F%2Fgithub.com%2Fdogancelik%2Firccloud-sws', target='_blank') Flattr it
     | &nbsp;or help me via&nbsp;
     a(href='https://gratipay.com/dogancelik/', target='_blank') Gratipay
   p.explanation
     a(href='https://github.com/dogancelik/irccloud-sws', target='_blank') Source code
+    | &nbsp;-&nbsp;
+    a(href='https://github.com/dogancelik/irccloud-sws/wiki/Help', target='_blank') Help page
