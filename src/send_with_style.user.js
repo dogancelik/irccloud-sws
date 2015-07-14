@@ -11,7 +11,7 @@ function embedStyle() {
   document.head.appendChild(style);
 }
 
-var swsEnabled, swsAlias, swsMarkdown, swsKeyboard, swsKeyCtrl, swsKeyAlt, swsKeyShift, swsKeyChar, shortcutWaiting, swsColorsTable, colorsTable, last2Keys;
+var swsEnabled, swsAlias, swsMarkdown, swsKeyboard, swsKeyCtrl, swsKeyAlt, swsKeyShift, swsKeyChar, shortcutWaiting, swsColorsTable, swsSpecialFuncs, colorsTable, last2Keys;
 
 var fontStyles = {
   color: '\u0003',
@@ -92,6 +92,45 @@ function trackLast2Keys(key) {
   }
 }
 
+// specialFunctions start
+function rainbow(text, match) {
+  var output = '';
+  var colors = ['05', '04', '07', '08', '09', '03', '11', '10', '12', '02', '06', '13', '15', '14'];
+  var startIndex = Math.floor(Math.random() * colors.length);
+
+  for (var i = 0; i < match.length; i++) {
+    var char = match[i];
+    if (char !== ' ') {
+      output += fontStyles.color + colors[startIndex++] + char + fontStyles.color;
+    } else {
+      output += char;
+    }
+    if (startIndex >= colors.length) {
+      startIndex = 0;
+    }
+  }
+
+  return output;
+}
+
+var specialFunctions = [
+  {
+    regex: /<rainbow>(.*)<\/rainbow>/g,
+    func: rainbow
+  }
+];
+
+function replaceSpecials(text) {
+  var oldText = text;
+  var newText = oldText;
+  for (var i = 0; i < specialFunctions.length; i++) {
+    var item = specialFunctions[i];
+    newText = oldText.replace(item.regex, item.func);
+  }
+  return newText;
+}
+// specialFunctions end
+
 function bindTextarea () {
   var input = $('#bufferInputView' + cb().bid());
   if (input.data('sws') !== '1') {
@@ -115,6 +154,7 @@ function bindTextarea () {
       var keyboardEnabled = swsKeyboard.prop('checked');
       var markdownEnabled = swsMarkdown.prop('checked');
       var colorsEnabled = swsColorsTable.prop('checked');
+      var specialEnabled = swsSpecialFuncs.prop('checked');
       var lowerKey = (isChrome ? String.fromCharCode(e.which) : e.key).toLowerCase();
 
       if (colorsEnabled) {
@@ -137,6 +177,12 @@ function bindTextarea () {
         var val = input.val();
         val = replaceAliases(val);
         input.val(val);
+
+        if (specialEnabled) {
+          var val = input.val();
+          val = replaceSpecials(val);
+          input.val(val);
+        }
 
         if (!keyboardEnabled) {
           var val = input.val();
@@ -255,6 +301,10 @@ function init() {
 
   var origColorsTable = container.find('.sws-colors-table');
   colorsTable = initColorsTable(origColorsTable.clone()); // always initialize it
+
+  swsSpecialFuncs = container.find('#sws-special-funcs').change(function () {
+    localStorage.setItem('swsSpecialFuncs', this.checked);
+  }).prop('checked', JSON.parse(localStorage.getItem('swsSpecialFuncs')) || false);
 
   bindTextarea();
 }
