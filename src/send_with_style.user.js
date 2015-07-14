@@ -11,7 +11,7 @@ function embedStyle() {
   document.head.appendChild(style);
 }
 
-var swsEnabled, swsAlias, swsMarkdown, swsKeyboard, swsKeyCtrl, swsKeyAlt, swsKeyShift, swsKeyChar, shortcutWaiting;
+var swsEnabled, swsAlias, swsMarkdown, swsKeyboard, swsKeyCtrl, swsKeyAlt, swsKeyShift, swsKeyChar, shortcutWaiting, swsColorsTable, colorsTable, last2Keys;
 
 var fontStyles = {
   color: '\u0003',
@@ -67,14 +67,59 @@ function insertTo(input, text) {
   input.prop('selectionEnd', cursorPos + 1);
 }
 
+function initColorsTable(colorsTable) {
+  var scroll = $('.scroll');
+  scroll.append(colorsTable);
+  return colorsTable.css({
+    position: 'fixed',
+    display: 'none'
+  });
+}
+
+function toggleColorsTable(input, toggle) {
+  var offset = input.offset();
+  colorsTable.css({
+    display: (toggle ? 'block' : 'none'),
+    left: offset.left + 'px',
+    top: (offset.top - 40) + 'px'
+  });
+}
+
+function trackLast2Keys(key) {
+  last2Keys += key;
+  if (last2Keys.length > 2) {
+    last2Keys = last2Keys.substring(1,3);
+  }
+}
+
 function bindTextarea () {
   var input = $('#bufferInputView' + cb().bid());
   if (input.data('sws') !== '1') {
+    input.on('keypress', function (e) {
+      var lowerKey = String.fromCharCode(e.which).toLowerCase();
+      if (e.which > 31) {
+        trackLast2Keys(lowerKey);
+      }
+    });
+
+    input.on('keyup', function (e) {
+      var keyboardEnabled = swsKeyboard.prop('checked');
+      var colorsEnabled = swsColorsTable.prop('checked');
+      if (colorsEnabled && !keyboardEnabled && last2Keys === '%c') {
+        toggleColorsTable(input, true);
+      }
+    });
+
     input.on('keydown', function (e) {
       var mainEnabled = swsEnabled.prop('checked');
       var keyboardEnabled = swsKeyboard.prop('checked');
       var markdownEnabled = swsMarkdown.prop('checked');
+      var colorsEnabled = swsColorsTable.prop('checked');
       var lowerKey = (isChrome ? String.fromCharCode(e.which) : e.key).toLowerCase();
+
+      if (colorsEnabled) {
+        toggleColorsTable(input, false);
+      }
 
       if (keyboardEnabled) {
         var enabledCtrl = swsKeyCtrl.prop('checked');
@@ -111,6 +156,9 @@ function bindTextarea () {
         switch (lowerKey) {
           case "c":
             insertTo(input, fontStyles.color);
+            if (colorsEnabled) {
+              toggleColorsTable(input, true);
+            }
             noInput = true;
             break;
           case "b":
@@ -197,6 +245,16 @@ function init() {
   swsMarkdown = container.find('#sws-markdown-mode').change(function () {
     localStorage.setItem('swsMarkdown', this.checked);
   }).prop('checked', JSON.parse(localStorage.getItem('swsMarkdown')) || false);
+
+  swsColorsTable = container.find('#sws-colors-table').change(function () {
+    localStorage.setItem('swsColorsTable', this.checked);
+    if (!this.checked) {
+      colorsTable.css('display', 'none');
+    }
+  }).prop('checked', JSON.parse(localStorage.getItem('swsColorsTable')) || false);
+
+  var origColorsTable = container.find('.sws-colors-table');
+  colorsTable = initColorsTable(origColorsTable.clone()); // always initialize it
 
   bindTextarea();
 }

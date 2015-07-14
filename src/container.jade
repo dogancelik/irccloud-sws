@@ -28,22 +28,24 @@
           span(style='color: blue') This is blue
     tr#sws-colors-box
       td(colspan='2')
-        span.sws-little-box.bg-white.black 0
-        span.sws-little-box.bg-black.white 1
-        span.sws-little-box.bg-navy.white 2
-        span.sws-little-box.bg-green.white 3
-        span.sws-little-box.bg-red.black 4
-        span.sws-little-box.bg-maroon.white 5
-        span.sws-little-box.bg-purple.white 6
-        span.sws-little-box.bg-orange.black 7
-        span.sws-little-box.bg-yellow.black 8
-        span.sws-little-box.bg-lime.black 9
-        span.sws-little-box.bg-teal.white 10
-        span.sws-little-box.bg-cyan.black 11
-        span.sws-little-box.bg-blue.white 12
-        span.sws-little-box.bg-magenta.black 13
-        span.sws-little-box.bg-grey.black 14
-        span.sws-little-box.bg-silver.black 15
+        table.sws-colors-table
+          tr
+            td: span.bg-white.black 0
+            td: span.bg-black.white 1
+            td: span.bg-navy.white 2
+            td: span.bg-green.white 3
+            td: span.bg-red.black 4
+            td: span.bg-maroon.white 5
+            td: span.bg-purple.white 6
+            td: span.bg-orange.black 7
+            td: span.bg-yellow.black 8
+            td: span.bg-lime.black 9
+            td: span.bg-teal.white 10
+            td: span.bg-cyan.black 11
+            td: span.bg-blue.white 12
+            td: span.bg-magenta.black 13
+            td: span.bg-grey.black 14
+            td: span.bg-silver.black 15
     tr
       td
         code %B
@@ -99,6 +101,9 @@
     span.sws-key-box      
       label(for='sws-key-char') Key:&nbsp;
       input#sws-key-char(type='text')
+  p.explanation
+    input#sws-colors-table(type='checkbox')
+    label(for='sws-colors-table') &nbsp;Show Colors Table (when you are about to type color numbers)
   p.explanation
     input#sws-markdown-mode(type='checkbox')
     label(for='sws-markdown-mode') &nbsp;Markdown Mode (Enables <code>*</code> and <code>**</code> for italic and bold text)
