@@ -76,8 +76,22 @@ function initColorsTable(colorsTable) {
   });
 }
 
+var currentInput; // required for colorsTable click
+
 function toggleColorsTable(input, toggle) {
   var offset = input.offset();
+  currentInput = input;
+
+  if (colorsTable.data('sws') !== '1') {
+    colorsTable.find('td').on('click', function() {
+      var number = $(this).children().first().text();
+      var text = currentInput.val();
+      currentInput.val(text + number);
+      toggleColorsTable(currentInput, false);
+    });
+    colorsTable.data('sws', '1');
+  }
+
   colorsTable.css({
     display: (toggle ? 'block' : 'none'),
     left: offset.left + 'px',
