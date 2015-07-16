@@ -67,6 +67,7 @@ function insertTo(input, text) {
   input.prop('selectionEnd', cursorPos + 1);
 }
 
+// colorsTable start
 function initColorsTable(colorsTable) {
   var scroll = $('.scroll');
   scroll.append(colorsTable);
@@ -80,7 +81,6 @@ var currentInput; // required for colorsTable click
 
 function toggleColorsTable(input, toggle) {
   var offset = input.offset();
-  currentInput = input;
 
   if (colorsTable.data('sws') !== '1') {
     colorsTable.find('td').on('click', function() {
@@ -99,12 +99,19 @@ function toggleColorsTable(input, toggle) {
   });
 }
 
+// required for showing colorsTable in normal mode
 function trackLast2Keys(key) {
   last2Keys += key;
   if (last2Keys.length > 2) {
     last2Keys = last2Keys.substring(1,3);
   }
 }
+
+function replaceColorsTable() {
+  var scroll = currentInput.parents('.buffer').find('.scroll');
+  scroll.append(colorsTable.detach());
+}
+// colorsTable end
 
 // specialFunctions start
 function rainbow(text, match) {
@@ -147,6 +154,10 @@ function replaceSpecials(text) {
 
 function bindTextarea () {
   var input = $('#bufferInputView' + cb().bid());
+  currentInput = input;
+
+  replaceColorsTable();
+
   if (input.data('sws') !== '1') {
     input.on('keypress', function (e) {
       var lowerKey = String.fromCharCode(e.which).toLowerCase();

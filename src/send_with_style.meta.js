@@ -3,7 +3,7 @@
 // @namespace   dogancelik.com
 // @description Enables font styles in IRCCloud
 // @include     https://www.irccloud.com/*
-// @version     3.2.1
+// @version     3.2.2
 // @grant       none
 // @updateURL   https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.meta.js
 // @downloadURL https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.user.js
