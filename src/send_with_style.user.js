@@ -258,7 +258,7 @@ function bindTextarea () {
 }
 
 function createMenu() {
-  return $('<div id="sws-bar"><a>Send with Style</a></div>').insertAfter('#statusActions');
+  return $('<li id="sws-bar"><a>Send with Style</a></li>').insertAfter('.accountMenu__items-list:first li:last');
 }
 
 function createContainer() {

@@ -3,7 +3,7 @@
 // @namespace   dogancelik.com
 // @description Enables font styles in IRCCloud
 // @include     https://www.irccloud.com/*
-// @version     3.2.2
+// @version     4.0.0
 // @grant       none
 // @updateURL   https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.meta.js
 // @downloadURL https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.user.js
@@ -18,7 +18,7 @@ var isChrome = /chrome/.test(navigator.userAgent.toLowerCase());
 function embedStyle() {
   var style = document.createElement('style');
   style.type = 'text/css';
-  style.innerHTML = '#sws-container{font-size:18px;display:none}#sws-bar{color:#c0dbff;float:right;}#sws-bar::after{content:"\\00a0|\\00a0"}#sws-bar a{cursor:pointer}.sws-info-table{width:100%;border:1px solid rgba(0,0,0,0.1);border-radius:.2em;padding:.5em}.sws-colors-table td{background-color:#fff;height:20px;width:20px;line-height:20px;font-size:12px;border:1px solid #000;border-left:0;text-align:center;padding:1px;cursor:pointer}.sws-colors-table td:first-child{border-left:1px solid #000}.sws-colors-table span{display:inline-block;height:20px;width:20px}#sws-colors-box{display:none}#sws-colors-anchor{cursor:pointer}.sws-key-box{display:inline-block;background-color:rgba(0,0,0,0.1);border-radius:.25em;padding:.25em .5em;margin-right:.25em}#sws-key-char{width:30px}#sws-donate{font-weight:bold;}#sws-donate a{vertical-align:top}#sws-custom-alias{height:60px;width:100%}#sws-enabled-label{font-weight:normal}#sws-enabled-check:not(:checked) ~ #sws-enabled-label{color:#f00;}#sws-enabled-check:not(:checked) ~ #sws-enabled-label::after{content:"Not enabled"}#sws-enabled-check:checked ~ #sws-enabled-label{color:#008000;}#sws-enabled-check:checked ~ #sws-enabled-label::after{content:"Enabled"}';
+  style.innerHTML = '#sws-container{font-size:18px;display:none}.sws-info-table{width:100%;border:1px solid rgba(0,0,0,0.1);border-radius:.2em;padding:.5em}.sws-colors-table td{background-color:#fff;height:20px;width:20px;line-height:20px;font-size:12px;border:1px solid #000;border-left:0;text-align:center;padding:1px;cursor:pointer}.sws-colors-table td:first-child{border-left:1px solid #000}.sws-colors-table span{display:inline-block;height:20px;width:20px}#sws-colors-box{display:none}#sws-colors-anchor{cursor:pointer}.sws-key-box{display:inline-block;background-color:rgba(0,0,0,0.1);border-radius:.25em;padding:.25em .5em;margin-right:.25em}#sws-key-char{width:30px}#sws-donate{font-weight:bold;}#sws-donate a{vertical-align:top}#sws-custom-alias{height:60px;width:100%}#sws-enabled-label{font-weight:normal}#sws-enabled-check:not(:checked) ~ #sws-enabled-label{color:#f00;}#sws-enabled-check:not(:checked) ~ #sws-enabled-label::after{content:"Not enabled"}#sws-enabled-check:checked ~ #sws-enabled-label{color:#008000;}#sws-enabled-check:checked ~ #sws-enabled-label::after{content:"Enabled"}';
   document.head.appendChild(style);
 }
 
@@ -269,7 +269,7 @@ function bindTextarea () {
 }
 
 function createMenu() {
-  return $('<div id="sws-bar"><a>Send with Style</a></div>').insertAfter('#statusActions');
+  return $('<li id="sws-bar"><a>Send with Style</a></li>').insertAfter('.accountMenu__items-list:first li:last');
 }
 
 function createContainer() {
