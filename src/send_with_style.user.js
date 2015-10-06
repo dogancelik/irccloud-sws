@@ -258,25 +258,23 @@ function bindTextarea () {
 }
 
 function createMenu() {
-  return $('<li id="sws-bar"><a>Send with Style</a></li>').insertAfter('.accountMenu__items-list:first li:last');
+  return $('<div id="sws-bar" class="settingsMenu__item settingsMenu__item__sendwithstyle"><a class="settingsMenu__link" href="#?/settings=sendwithstyle">Send with Style</a></div>').insertAfter('.settingsContainer .settingsMenu .settingsMenu__item:last');
 }
 
 function createContainer() {
-  return $('/* @include ../build/container.html */').insertAfter('#upgradeContainer');
+  return $('/* @include ../build/container.html */').insertAfter('.settingsContentsWrapper .settingsContents:last');
 }
 
 function init() {
   embedStyle();
 
   var menu = createMenu();
-  menu.children('a').on('click', function () {
-    container.fadeIn();
-  });
-
   var container = createContainer();
-  container.find('.close').on('click', function () {
-    container.fadeOut();
-  });
+
+  if (window.location.hash === '#?/settings=sendwithstyle') {
+    window.location.hash = '#?/settings';
+    menu.find('a')[0].click();
+  }
 
   swsEnabled = container.find('#sws-enabled-check').change(function () {
     localStorage.setItem('swsEnabled', this.checked);

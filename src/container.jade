@@ -1,6 +1,4 @@
-#sws-container.accountContainer
-  button.close(type='button')
-    span Close
+#sws-container.settingsContents.settingsContents__sendwithstyle(data-section='sendwithstyle')
   h2
     span Send with Style&nbsp;
     input#sws-enabled-check(type='checkbox')
@@ -23,7 +21,7 @@
           font(color='#33accc') r
       td
         code %C2This is blue
-        |  → 
+        | &nbsp;→&nbsp;
         code
           span(style='color: blue') This is blue
     tr#sws-colors-box
@@ -49,40 +47,40 @@
     tr
       td
         code %B
-        |  for 
+        | &nbsp;for&nbsp;
         b bold
       td
         code %BVery bold
-        |  → 
+        | &nbsp;→&nbsp;
         code
           b Very bold
     tr
       td
         code %I
-        |  for 
+        | &nbsp;for&nbsp;
         i italic
       td
         code %IPizza
-        |  → 
+        | &nbsp;→&nbsp;
         code
           i Pizza
     tr
       td
         code %U
-        |  for 
+        | &nbsp;for&nbsp;
         u underline
       td
         code %UBeep
-        |  → 
+        | &nbsp;→&nbsp;
         code
           u Beep
     tr
       td
         code %R
-        |  for reset
+        | &nbsp;for reset
       td
         code %C4Wo%Rrd
-        |  → 
+        | &nbsp;→&nbsp;
         code
           span(style='color: red') Wo
           | rd
@@ -98,7 +96,7 @@
     span.sws-key-box
       label(for='sws-key-alt') Shift:&nbsp;
       input#sws-key-shift(type='checkbox')
-    span.sws-key-box      
+    span.sws-key-box
       label(for='sws-key-char') Key:&nbsp;
       input#sws-key-char(type='text')
   p.explanation
@@ -113,10 +111,8 @@
   p.explanation Custom aliases
   textarea#sws-custom-alias
   p#sws-donate.explanation
-    | If you like this script, please 
-    a(href='https://flattr.com/submit/auto?user_id=dogancelik&url=https%3A%2F%2Fgithub.com%2Fdogancelik%2Firccloud-sws', target='_blank') Flattr it
-    | &nbsp;or help me via&nbsp;
-    a(href='https://gratipay.com/dogancelik/', target='_blank') Gratipay
+    | If you like this script, please&nbsp;
+    a(href='http://dogancelik.com/donate.html', target='_blank') consider a donation
   p.explanation
     a(href='https://github.com/dogancelik/irccloud-sws', target='_blank') Source code
     | &nbsp;-&nbsp;
