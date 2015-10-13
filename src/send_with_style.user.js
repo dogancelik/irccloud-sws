@@ -153,6 +153,10 @@ function replaceSpecials(text) {
 // specialFunctions end
 
 function bindTextarea () {
+  if (cb() == null) {
+    return false;
+  }
+
   var input = $('#bufferInputView' + cb().bid());
   currentInput = input;
 
