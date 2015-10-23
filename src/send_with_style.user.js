@@ -2,14 +2,51 @@
 
 'use strict';
 
-var isChrome = /chrome/.test(navigator.userAgent.toLowerCase());
+var Settings = {
+  keyPrefix: 'sws.',
+  get: function(key, def) {
+    var getVal = localStorage.getItem(this.keyPrefix + key);
+    if (typeof def !== 'undefined' && getVal == null) {
+      this.set(key, def);
+      return def;
+    }
+    return getVal;
+  },
+  set: function(key, value) {
+    localStorage.setItem(this.keyPrefix + key, value);
+  },
+  remove: function (keys) {
+    var keys = [].concat(keys);
+    keys.forEach((function (key) {
+      localStorage.removeItem(this.keyPrefix + key);
+    }).bind(this));
+  }
+};
 
-function embedStyle() {
-  var style = document.createElement('style');
-  style.type = 'text/css';
-  style.innerHTML = '/* @include ../build/style.css */';
-  document.head.appendChild(style);
+function upgradeOldSettings() {
+  var settingsTable = {
+    'swsEnabled': 'sws.enabled',
+    'swsAlias': 'sws.alias',
+    'swsKeyboard': 'sws.key.enabled',
+    'swsKeyCtrl': 'sws.key.ctrl',
+    'swsKeyAlt': 'sws.key.alt',
+    'swsKeyShift': 'sws.key.shift',
+    'swsKeyChar': 'sws.key.char',
+    'swsMarkdown': 'sws.markdown',
+    'swsColorsTable': 'sws.colorsTable'
+  };
+  if (localStorage.getItem('swsEnabled') != null) {
+    for (var key in settingsTable) {
+      var oldVal = localStorage.getItem(key);
+      if (oldVal != null) {
+        localStorage.setItem(settingsTable[key], oldVal);
+      }
+      localStorage.removeItem(key);
+    }
+  }
 }
+
+var isChrome = /chrome/.test(navigator.userAgent.toLowerCase());
 
 var swsEnabled, swsAlias, swsMarkdown, swsKeyboard, swsKeyCtrl, swsKeyAlt, swsKeyShift, swsKeyChar, shortcutWaiting, swsColorsTable, swsSpecialFuncs, colorsTable, last2Keys;
 
@@ -68,31 +105,22 @@ function insertTo(input, text) {
 }
 
 // colorsTable start
-function initColorsTable(colorsTable) {
-  var scroll = $('.scroll');
-  scroll.append(colorsTable);
-  return colorsTable.css({
-    position: 'fixed',
-    display: 'none'
-  });
-}
-
-var currentInput; // required for colorsTable click
+var currentInput, currentColorsTable, origColorsTable; // required for colorsTable click
 
 function toggleColorsTable(input, toggle) {
   var offset = input.offset();
 
-  if (colorsTable.data('sws') !== '1') {
-    colorsTable.find('td').on('click', function() {
+  if (currentColorsTable.data('sws') !== '1') {
+    currentColorsTable.find('td').on('click', function() {
       var number = $(this).children().first().text();
       var text = currentInput.val();
       currentInput.val(text + number);
       toggleColorsTable(currentInput, false);
     });
-    colorsTable.data('sws', '1');
+    currentColorsTable.data('sws', '1');
   }
 
-  colorsTable.css({
+  currentColorsTable.css({
     display: (toggle ? 'block' : 'none'),
     left: offset.left + 'px',
     top: (offset.top - 40) + 'px'
@@ -107,9 +135,21 @@ function trackLast2Keys(key) {
   }
 }
 
-function replaceColorsTable() {
-  var scroll = currentInput.parents('.buffer').find('.scroll');
-  scroll.append(colorsTable.detach());
+function createColorsTable() {
+  var scroll = currentInput.parents('.buffermain').find('.scroll');
+  var colorsTable = $('#sws-current-colors-table');
+
+  if (colorsTable.length === 0) {
+    colorsTable = origColorsTable.clone();
+    colorsTable.attr('id', 'sws-current-colors-table');
+    scroll.append(colorsTable);
+    colorsTable.css({
+      position: 'fixed',
+      display: 'none'
+    });
+  }
+
+  return colorsTable.detach().appendTo(scroll);
 }
 // colorsTable end
 
@@ -159,8 +199,7 @@ function bindTextarea () {
 
   var input = $('#bufferInputView' + cb().bid());
   currentInput = input;
-
-  replaceColorsTable();
+  currentColorsTable = createColorsTable();
 
   if (input.data('sws') !== '1') {
     input.on('keypress', function (e) {
@@ -261,6 +300,10 @@ function bindTextarea () {
   }
 }
 
+function embedStyle() {
+  return $('<style>').prop('type', 'text/css').html('/* @include ../build/style.css */').appendTo('head:first');
+}
+
 function createMenu() {
   return $('<div id="sws-bar" class="settingsMenu__item settingsMenu__item__sendwithstyle"><a class="settingsMenu__link" href="#?/settings=sendwithstyle">Send with Style</a></div>').insertAfter('.settingsContainer .settingsMenu .settingsMenu__item:last');
 }
@@ -271,6 +314,7 @@ function createContainer() {
 
 function init() {
   embedStyle();
+  upgradeOldSettings(); // for version 4.0.3 and below
 
   var menu = createMenu();
   var container = createContainer();
@@ -281,8 +325,8 @@ function init() {
   }
 
   swsEnabled = container.find('#sws-enabled-check').change(function () {
-    localStorage.setItem('swsEnabled', this.checked);
-  }).prop('checked', JSON.parse(localStorage.getItem('swsEnabled')) || true);
+    Settings.set('enabled', this.checked);
+  }).prop('checked', JSON.parse(Settings.get('enabled', true)));
 
   var colorsBox = container.find('#sws-colors-box');
   container.find('#sws-colors-anchor').click(function () {
@@ -290,48 +334,47 @@ function init() {
   });
 
   swsAlias = container.find("#sws-custom-alias");
-  swsAlias.val(localStorage.getItem('swsAlias'))
+  swsAlias.val(Settings.get('alias'))
   .on('change', function () {
-    localStorage.setItem('swsAlias', swsAlias.val());
+    Settings.set('alias', swsAlias.val());
   });
 
   swsKeyboard = container.find('#sws-keyboard-mode').change(function () {
-    localStorage.setItem('swsKeyboard', this.checked);
-  }).prop('checked', JSON.parse(localStorage.getItem('swsKeyboard')) || false);
+    Settings.set('key.enabled', this.checked);
+  }).prop('checked', JSON.parse(Settings.get('key.enabled')) || false);
 
   swsKeyCtrl = container.find('#sws-key-ctrl').change(function () {
-    localStorage.setItem('swsKeyCtrl', this.checked);
-  }).prop('checked', JSON.parse(localStorage.getItem('swsKeyCtrl')) || true);
+    Settings.set('key.ctrl', this.checked);
+  }).prop('checked', JSON.parse(Settings.get('key.ctrl')) || true);
 
   swsKeyAlt = container.find('#sws-key-alt').change(function () {
-    localStorage.setItem('swsKeyAlt', this.checked);
-  }).prop('checked', JSON.parse(localStorage.getItem('swsKeyAlt')) || false);
+    Settings.set('key.alt', this.checked);
+  }).prop('checked', JSON.parse(Settings.get('key.alt')) || false);
 
   swsKeyShift = container.find('#sws-key-shift').change(function () {
-    localStorage.setItem('swsKeyShift', this.checked);
-  }).prop('checked', JSON.parse(localStorage.getItem('swsKeyShift')) || true);
+    Settings.set('key.shift', this.checked);
+  }).prop('checked', JSON.parse(Settings.get('key.shift')) || true);
 
   swsKeyChar = container.find('#sws-key-char').change(function () {
-    localStorage.setItem('swsKeyChar', this.value);
-  }).val(localStorage.getItem('swsKeyChar') || 'z');
+    Settings.set('key.char', this.value);
+  }).val(Settings.get('key.char', 'z'));
 
   swsMarkdown = container.find('#sws-markdown-mode').change(function () {
-    localStorage.setItem('swsMarkdown', this.checked);
-  }).prop('checked', JSON.parse(localStorage.getItem('swsMarkdown')) || false);
+    Settings.set('markdown', this.checked);
+  }).prop('checked', JSON.parse(Settings.get('markdown', false)));
 
   swsColorsTable = container.find('#sws-colors-table').change(function () {
-    localStorage.setItem('swsColorsTable', this.checked);
+    Settings.set('colorsTable', this.checked);
     if (!this.checked) {
       colorsTable.css('display', 'none');
     }
-  }).prop('checked', JSON.parse(localStorage.getItem('swsColorsTable')) || false);
+  }).prop('checked', JSON.parse(Settings.get('colorsTable', false)));
 
-  var origColorsTable = container.find('.sws-colors-table');
-  colorsTable = initColorsTable(origColorsTable.clone()); // always initialize it
+  origColorsTable = container.find('.sws-colors-table');
 
   swsSpecialFuncs = container.find('#sws-special-funcs').change(function () {
-    localStorage.setItem('swsSpecialFuncs', this.checked);
-  }).prop('checked', JSON.parse(localStorage.getItem('swsSpecialFuncs')) || false);
+    Settings.set('specialFuncs', this.checked);
+  }).prop('checked', JSON.parse(Settings.get('specialFuncs', false)));
 
   bindTextarea();
 }
