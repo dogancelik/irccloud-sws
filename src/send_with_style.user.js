@@ -35,13 +35,13 @@ function upgradeOldSettings() {
     'swsMarkdown': 'sws.markdown',
     'swsColorsTable': 'sws.colorsTable'
   };
-  if (localStorage.getItem('swsEnabled') != null) {
-    for (var key in settingsTable) {
-      var oldVal = localStorage.getItem(key);
-      if (oldVal != null) {
-        localStorage.setItem(settingsTable[key], oldVal);
-      }
-      localStorage.removeItem(key);
+  for (var oldKey in settingsTable) {
+    var newKey = settingsTable[oldKey];
+    var oldVal = localStorage[oldKey];
+    var newVal = localStorage[newKey];
+    if (typeof oldVal !== 'undefined') {
+      localStorage.setItem(newKey, oldVal);
+      localStorage.removeItem(oldKey);
     }
   }
 }
@@ -319,9 +319,9 @@ function init() {
   var menu = createMenu();
   var container = createContainer();
 
-  if (window.location.hash === '#?/settings=sendwithstyle') {
-    window.location.hash = '#?/settings';
-    menu.find('a')[0].click();
+  var hashName = 'sendwithstyle';
+  if (window.location.hash === '#?/settings=' + hashName) {
+    SESSIONVIEW.showSettings(hashName);
   }
 
   swsEnabled = container.find('#sws-enabled-check').change(function () {
