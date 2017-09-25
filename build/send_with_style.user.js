@@ -3,7 +3,7 @@
 // @namespace   dogancelik.com
 // @description Enables font styles in IRCCloud
 // @include     https://www.irccloud.com/*
-// @version     4.0.5
+// @version     4.1.0
 // @grant       none
 // @updateURL   https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.meta.js
 // @downloadURL https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.user.js
@@ -316,7 +316,7 @@ function embedStyle() {
 }
 
 function createMenu() {
-  return $('<div id="sws-bar" class="settingsMenu__item settingsMenu__item__sendwithstyle"><a class="settingsMenu__link" href="#?/settings=sendwithstyle">Send with Style</a></div>').insertAfter('.settingsContainer .settingsMenu .settingsMenu__item:last');
+  return $('<div id="sws-bar" class="settingsMenu__item settingsMenu__item__sendwithstyle"><a class="settingsMenu__link" href="/?/settings=sendwithstyle">Send with Style</a></div>').insertAfter('.settingsContainer .settingsMenu .settingsMenu__item:last');
 }
 
 function createContainer() {
@@ -331,7 +331,7 @@ function init() {
   var container = createContainer();
 
   var hashName = 'sendwithstyle';
-  if (window.location.hash === '#?/settings=' + hashName) {
+  if (window.location.search === '?/settings=' + hashName) {
     SESSIONVIEW.showSettings(hashName);
   }
 
@@ -394,12 +394,14 @@ function init() {
   if (window.hasOwnProperty('SESSION')) {
     window.SESSION.bind('init', function () {
       init();
+
+      window.SESSION.buffers.on('doneSelected', function () {
+        bindTextarea();
+      });
     });
   } else {
     setTimeout(checkSession, 100);
   }
 })();
-
-window.onhashchange = function () { bindTextarea(); };
 
 })();
