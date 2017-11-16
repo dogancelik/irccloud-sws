@@ -3,7 +3,7 @@
 // @namespace   dogancelik.com
 // @description Enables font styles in IRCCloud
 // @include     https://www.irccloud.com/*
-// @version     4.3.0
+// @version     4.4.0
 // @grant       none
 // @updateURL   https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.meta.js
 // @downloadURL https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.user.js
@@ -79,6 +79,7 @@ function replaceFontStyles (str) {
 
 function replaceMarkdown (str) {
   if (/^\/mode/.test(str)) return str;
+  if (/^\\/.test(str)) return str.substr(1);
 
   return str.replace(/\*{3}([^\*]+)\*{3}/g, fontStyles.bold + fontStyles.italic + '$1' + fontStyles.italic + fontStyles.bold)
     .replace(/\*{2}([^\*]+)\*{2}/g, fontStyles.bold + '$1' + fontStyles.bold)

@@ -68,6 +68,7 @@ function replaceFontStyles (str) {
 
 function replaceMarkdown (str) {
   if (/^\/mode/.test(str)) return str;
+  if (/^\\/.test(str)) return str.substr(1);
 
   return str.replace(/\*{3}([^\*]+)\*{3}/g, fontStyles.bold + fontStyles.italic + '$1' + fontStyles.italic + fontStyles.bold)
     .replace(/\*{2}([^\*]+)\*{2}/g, fontStyles.bold + '$1' + fontStyles.bold)
