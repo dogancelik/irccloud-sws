@@ -3,12 +3,11 @@
 // @namespace   dogancelik.com
 // @description Enables font styles in IRCCloud
 // @include     https://www.irccloud.com/*
-// @version     4.4.0
+// @version     4.5.0
 // @grant       none
 // @updateURL   https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.meta.js
 // @downloadURL https://github.com/dogancelik/irccloud-sws/raw/master/build/send_with_style.user.js
 // ==/UserScript==
-
 (function () {
 
 'use strict';
@@ -66,7 +65,8 @@ var fontStyles = {
   bold: '\u0002',
   reset: '\u000f',
   italic: '\u001d',
-  underline: '\u001f'
+  underline: '\u001f',
+  strikethrough: '\u001e',
 };
 
 function replaceFontStyles (str) {
@@ -74,6 +74,7 @@ function replaceFontStyles (str) {
     .replace(/%R/g, fontStyles.reset)
     .replace(/%I/g, fontStyles.italic)
     .replace(/%U/g, fontStyles.underline)
+    .replace(/%X/g, fontStyles.strikethrough)
     .replace(/%C/g, fontStyles.color);
 }
 
@@ -85,7 +86,8 @@ function replaceMarkdown (str) {
     .replace(/\*{2}([^\*]+)\*{2}/g, fontStyles.bold + '$1' + fontStyles.bold)
     .replace(/\*{1}([^\*]+)\*{1}/g, fontStyles.italic + '$1' + fontStyles.italic)
     .replace(/\_{2}([^\_]+)\_{2}/g, fontStyles.underline + '$1' + fontStyles.underline)
-    .replace(/\_{1}([^\_]+)\_{1}/g, fontStyles.italic + '$1' + fontStyles.italic);
+    .replace(/\_{1}([^\_]+)\_{1}/g, fontStyles.italic + '$1' + fontStyles.italic)
+    .replace(/\~{2}([^\~]+)\~{2}/g, fontStyles.strikethrough + '$1' + fontStyles.strikethrough);
 }
 
 function replaceAliases (str) {
@@ -303,6 +305,10 @@ function bindTextarea () {
             insertTo(input, fontStyles.underline);
             noInput = true;
             break;
+          case 'x':
+            insertTo(input, fontStyles.strikethrough);
+            noInput = true;
+            break;
           case "r":
             insertTo(input, fontStyles.reset);
             noInput = true;
@@ -325,7 +331,7 @@ function createMenu() {
 }
 
 function createContainer() {
-  return $('<div id="sws-container" data-section="sendwithstyle" class="settingsContents settingsContents__sendwithstyle"><h2 class="settingsTitle"><span>Send with Style&nbsp;</span><input id="sws-enabled-check" type="checkbox"/>&nbsp;<label id="sws-enabled-label" for="sws-enabled-check"></label></h2><p class="explanation">Type your text as you normally would, use the codes to style your text.</p><p class="explanation sws-bold">If your settings are lost, please&nbsp;<a href="https://github.com/dogancelik/irccloud-sws/wiki/Help#my-custom-settings-have-disappeared-in-new-version-what-do-i-do" target="_blank">read this page</a>&nbsp;to learn how to recover it.</p><table class="sws-info-table"><tr><th>Code</th><th>Example</th></tr><tr><td><code>%C</code>&nbsp;for&nbsp;<a id="sws-colors-anchor" title="Click here to show color numbers" style="border-bottom: 1px dashed black;"><font color="#ff0000">c</font><font color="#cc8f33">o</font><font color="#99ed66">l</font><font color="#66f899">o</font><font color="#33accc">r</font></a></td><td><code>%C2This is blue</code>&nbsp;→&nbsp;<code><span style="color: blue">This is blue</span></code></td></tr><tr id="sws-colors-box"><td colspan="2"><table class="sws-colors-table"><tr><td><span class="bg-white black">0</span></td><td><span class="bg-black white">1</span></td><td><span class="bg-navy white">2</span></td><td><span class="bg-green white">3</span></td><td><span class="bg-red black">4</span></td><td><span class="bg-maroon white">5</span></td><td><span class="bg-purple white">6</span></td><td><span class="bg-orange black">7</span></td><td><span class="bg-yellow black">8</span></td><td><span class="bg-lime black">9</span></td><td><span class="bg-teal white">10</span></td><td><span class="bg-cyan black">11</span></td><td><span class="bg-blue white">12</span></td><td><span class="bg-magenta black">13</span></td><td><span class="bg-grey black">14</span></td><td><span class="bg-silver black">15</span></td></tr></table></td></tr><tr><td><code>%B</code>&nbsp;for&nbsp;<b>bold</b></td><td><code>%BVery bold</code>&nbsp;→&nbsp;<code><b>Very bold</b></code></td></tr><tr><td><code>%I</code>&nbsp;for&nbsp;<i>italic</i></td><td><code>%IPizza</code>&nbsp;→&nbsp;<code><i>Pizza</i></code></td></tr><tr><td><code>%U</code>&nbsp;for&nbsp;<u>underline</u></td><td><code>%UBeep</code>&nbsp;→&nbsp;<code><u>Beep</u></code></td></tr><tr><td><code>%R</code>&nbsp;for reset</td><td><code>%C4Wo%Rrd</code>&nbsp;→&nbsp;<code><span style="color: red">Wo</span>rd</code></td></tr></table><p class="explanation"><input id="sws-keyboard-mode" type="checkbox"/><label for="sws-keyboard-mode">&nbsp;Keyboard Mode (Disables %C, %B etc.)&nbsp;</label><span class="sws-key-box"><label for="sws-key-ctrl">Ctrl:&nbsp;</label><input id="sws-key-ctrl" type="checkbox"/></span><span class="sws-key-box"><label for="sws-key-alt">Alt:&nbsp;</label><input id="sws-key-alt" type="checkbox"/></span><span class="sws-key-box"><label for="sws-key-alt">Shift:&nbsp;</label><input id="sws-key-shift" type="checkbox"/></span><span class="sws-key-box"><label for="sws-key-char">Key:&nbsp;</label><input id="sws-key-char" type="text"/></span></p><p class="explanation"><input id="sws-colors-table" type="checkbox"/><label for="sws-colors-table">&nbsp;Show Colors Table (when you are about to type color numbers)</label></p><p class="explanation"><input id="sws-markdown-mode" type="checkbox"/><label for="sws-markdown-mode">&nbsp;Markdown Mode (Enables <code>*</code> and <code>_</code> for <i>italic text</i>, <code>**</code> for <b>bold text</b>, and <code>__</code> for <u>underlined text</u>.)</label></p><p class="explanation"><input id="sws-special-funcs" type="checkbox"/><label for="sws-special-funcs">&nbsp;Special Functions (Enables <code>&lt;rainbow&gt;</code> tag)</label></p><h3>Custom aliases</h3><textarea id="sws-custom-alias"></textarea><hr/><p id="sws-donate" class="explanation sws-bold">If you like this script, please&nbsp;<a href="http://dogancelik.com/donate.html" target="_blank">consider a donation</a></p><p class="explanation"><a href="https://github.com/dogancelik/irccloud-sws" target="_blank">Source code</a>&nbsp;-&nbsp;<a href="https://github.com/dogancelik/irccloud-sws/issues" target="_blank">Report bug / Request feature</a>&nbsp;-&nbsp;<a href="https://github.com/dogancelik/irccloud-sws/wiki/Help" target="_blank">Help</a></p></div>').insertAfter('.settingsContentsWrapper .settingsContents:last');
+  return $('<div id="sws-container" data-section="sendwithstyle" class="settingsContents settingsContents__sendwithstyle"><h2 class="settingsTitle"><span>Send with Style&nbsp;</span><input id="sws-enabled-check" type="checkbox"/>&nbsp;<label id="sws-enabled-label" for="sws-enabled-check"></label></h2><p class="explanation">Type your text as you normally would, use the codes to style your text.</p><p class="explanation sws-bold">If your settings are lost, please&nbsp;<a href="https://github.com/dogancelik/irccloud-sws/wiki/Help#my-custom-settings-have-disappeared-in-new-version-what-do-i-do" target="_blank">read this page</a>&nbsp;to learn how to recover it.</p><table class="sws-info-table"><tr><th>Code</th><th>Example</th></tr><tr><td><code>%C</code>&nbsp;for&nbsp;<a id="sws-colors-anchor" title="Click here to show color numbers" style="border-bottom: 1px dashed black;"><font color="#ff0000">c</font><font color="#cc8f33">o</font><font color="#99ed66">l</font><font color="#66f899">o</font><font color="#33accc">r</font></a></td><td><code>%C2This is blue</code>&nbsp;→&nbsp;<code><span style="color: blue">This is blue</span></code></td></tr><tr id="sws-colors-box"><td colspan="2"><table class="sws-colors-table"><tr><td><span class="bg-white black">0</span></td><td><span class="bg-black white">1</span></td><td><span class="bg-navy white">2</span></td><td><span class="bg-green white">3</span></td><td><span class="bg-red black">4</span></td><td><span class="bg-maroon white">5</span></td><td><span class="bg-purple white">6</span></td><td><span class="bg-orange black">7</span></td><td><span class="bg-yellow black">8</span></td><td><span class="bg-lime black">9</span></td><td><span class="bg-teal white">10</span></td><td><span class="bg-cyan black">11</span></td><td><span class="bg-blue white">12</span></td><td><span class="bg-magenta black">13</span></td><td><span class="bg-grey black">14</span></td><td><span class="bg-silver black">15</span></td></tr></table></td></tr><tr><td><code>%B</code>&nbsp;for&nbsp;<b>bold</b></td><td><code>%BVery bold</code>&nbsp;→&nbsp;<code><b>Very bold</b></code></td></tr><tr><td><code>%I</code>&nbsp;for&nbsp;<i>italic</i></td><td><code>%IPizza</code>&nbsp;→&nbsp;<code><i>Pizza</i></code></td></tr><tr><td><code>%U</code>&nbsp;for&nbsp;<u>underline</u></td><td><code>%UBeep</code>&nbsp;→&nbsp;<code><u>Beep</u></code></td></tr><tr><td><code>%X</code>&nbsp;for&nbsp;<del>strikethrough</del></td><td><code>%XStrikethrough</code>&nbsp;→&nbsp;<code><del>Strikethrough</del></code></td></tr><tr><td><code>%R</code>&nbsp;for reset</td><td><code>%C4Wo%Rrd</code>&nbsp;→&nbsp;<code><span style="color: red">Wo</span>rd</code></td></tr></table><p class="explanation"><input id="sws-keyboard-mode" type="checkbox"/><label for="sws-keyboard-mode">&nbsp;Keyboard Mode (Disables %C, %B etc.)&nbsp;</label><span class="sws-key-box"><label for="sws-key-ctrl">Ctrl:&nbsp;</label><input id="sws-key-ctrl" type="checkbox"/></span><span class="sws-key-box"><label for="sws-key-alt">Alt:&nbsp;</label><input id="sws-key-alt" type="checkbox"/></span><span class="sws-key-box"><label for="sws-key-alt">Shift:&nbsp;</label><input id="sws-key-shift" type="checkbox"/></span><span class="sws-key-box"><label for="sws-key-char">Key:&nbsp;</label><input id="sws-key-char" type="text"/></span></p><p class="explanation"><input id="sws-colors-table" type="checkbox"/><label for="sws-colors-table">&nbsp;Show Colors Table (when you are about to type color numbers)</label></p><p class="explanation"><input id="sws-markdown-mode" type="checkbox"/><label for="sws-markdown-mode">&nbsp;Markdown Mode (Enables <code>*</code> and <code>_</code> for <i>italic text</i>, <code>**</code> for <b>bold text</b>, and <code>__</code> for <u>underlined text</u>.)</label></p><p class="explanation"><input id="sws-special-funcs" type="checkbox"/><label for="sws-special-funcs">&nbsp;Special Functions (Enables <code>&lt;rainbow&gt;</code> tag)</label></p><h3>Custom aliases</h3><textarea id="sws-custom-alias"></textarea><hr/><p id="sws-donate" class="explanation sws-bold">If you like this script, please&nbsp;<a href="http://dogancelik.com/donate.html" target="_blank">consider a donation</a></p><p class="explanation"><a href="https://github.com/dogancelik/irccloud-sws" target="_blank">Source code</a>&nbsp;-&nbsp;<a href="https://github.com/dogancelik/irccloud-sws/issues" target="_blank">Report bug / Request feature</a>&nbsp;-&nbsp;<a href="https://github.com/dogancelik/irccloud-sws/wiki/Help" target="_blank">Help</a></p></div>').insertAfter('.settingsContentsWrapper .settingsContents:last');
 }
 
 function init() {

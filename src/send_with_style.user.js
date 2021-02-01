@@ -55,7 +55,8 @@ var fontStyles = {
   bold: '\u0002',
   reset: '\u000f',
   italic: '\u001d',
-  underline: '\u001f'
+  underline: '\u001f',
+  strikethrough: '\u001e',
 };
 
 function replaceFontStyles (str) {
@@ -63,6 +64,7 @@ function replaceFontStyles (str) {
     .replace(/%R/g, fontStyles.reset)
     .replace(/%I/g, fontStyles.italic)
     .replace(/%U/g, fontStyles.underline)
+    .replace(/%X/g, fontStyles.strikethrough)
     .replace(/%C/g, fontStyles.color);
 }
 
@@ -74,7 +76,8 @@ function replaceMarkdown (str) {
     .replace(/\*{2}([^\*]+)\*{2}/g, fontStyles.bold + '$1' + fontStyles.bold)
     .replace(/\*{1}([^\*]+)\*{1}/g, fontStyles.italic + '$1' + fontStyles.italic)
     .replace(/\_{2}([^\_]+)\_{2}/g, fontStyles.underline + '$1' + fontStyles.underline)
-    .replace(/\_{1}([^\_]+)\_{1}/g, fontStyles.italic + '$1' + fontStyles.italic);
+    .replace(/\_{1}([^\_]+)\_{1}/g, fontStyles.italic + '$1' + fontStyles.italic)
+    .replace(/\~{2}([^\~]+)\~{2}/g, fontStyles.strikethrough + '$1' + fontStyles.strikethrough);
 }
 
 function replaceAliases (str) {
@@ -290,6 +293,10 @@ function bindTextarea () {
             break;
           case "u":
             insertTo(input, fontStyles.underline);
+            noInput = true;
+            break;
+          case 'x':
+            insertTo(input, fontStyles.strikethrough);
             noInput = true;
             break;
           case "r":
