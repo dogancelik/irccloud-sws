@@ -1,47 +1,52 @@
-var gulp = require('gulp');
-var jade = require('gulp-jade');
-var preprocess = require('gulp-preprocess');
-var stylus = require('gulp-stylus');
-var concat = require('gulp-concat');
+const gulp = require('gulp');
+const jade = require('gulp-pug');
+const preprocess = require('gulp-preprocess');
+const stylus = require('gulp-stylus');
+const concat = require('gulp-concat');
 
 var pathDest = 'build/';
 var pathSrc = 'src/';
 var userJs = 'send_with_style.user.js';
 var metaJs = 'send_with_style.meta.js';
 
-gulp.task('jade', function () {
+exports.jade = function _jade() {
   return gulp.src(pathSrc + 'container.jade')
     .pipe(jade())
     .pipe(gulp.dest(pathDest));
-});
+};
 
-gulp.task('stylus', function () {
+exports.stylus = function _stylus() {
   return gulp.src(pathSrc + 'style.styl')
     .pipe(stylus({ compress: true }))
     .pipe(gulp.dest(pathDest));
-});
+};
 
-gulp.task('js', ['jade', 'stylus'], function () {
+function _js() {
   return gulp.src(pathSrc + userJs)
     .pipe(preprocess())
     .pipe(gulp.dest(pathDest));
-});
+}
+exports.js = gulp.series(gulp.parallel(exports.jade, exports.stylus), _js);
 
-gulp.task('meta', function () {
+exports.meta = function _meta() {
   return gulp.src(pathSrc + metaJs)
     .pipe(gulp.dest(pathDest));
-});
+};
 
-gulp.task('concat', ['js', 'meta'], function () {
+exports.concat = function _concat() {
   return gulp.src([pathSrc + metaJs, pathDest + userJs])
     .pipe(concat(userJs))
     .pipe(gulp.dest(pathDest));
-});
+};
 
-gulp.task('build', ['concat']);
-
-gulp.task('watch', function () {
+exports.watch = function watch() {
   gulp.watch(pathSrc + '*.*', ['build']);
-});
+};
 
-gulp.task('default', ['build']);
+exports.default = exports.build = gulp.series(
+  exports.jade,
+  exports.stylus,
+  exports.meta,
+  exports.js,
+  exports.concat
+);
